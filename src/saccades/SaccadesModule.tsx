@@ -2,7 +2,7 @@ import {Canvas, Vector3} from "@react-three/fiber";
 import {useCallback, useMemo, useState} from "react";
 import {GameConfig, OrientationConfig} from "./types/GameConfig.ts";
 import './styles.css';
-import {Button, Card, CardContent, CardHeader, CardTitle} from "@components";
+import {Button, Card, CardContent, CardHeader, CardTitle, useTheme} from "@components";
 import {OrientationSwitch} from "./components/OrientationSwitch.tsx";
 import {MeshCircle} from "./components/MeshCircle.tsx";
 
@@ -20,9 +20,15 @@ const initGameState: GameState = {
 
 const initHorizontalConfig: OrientationConfig = {
     repetitions: 30,
-    colors: {
-        center: '#000',
-        sides: '#328bff',
+    circleColors: {
+        lightMode: {
+            center: '#000',
+            sides: '#328bff',
+        },
+        darkMode: {
+            center: '#fff',
+            sides: '#4aceff',
+        }
     },
     circleDistance: 6,
     blinkInterval: 400,
@@ -41,12 +47,16 @@ const initGameConfig: GameConfig = {
 }
 
 function SaccadesModule() {
+    const {resolveTheme} = useTheme();
     const [gameConfig, setGameConfig] = useState<GameConfig>(initGameConfig);
     const [gameState, setGameState] = useState<GameState>(initGameState);
     const orientationConfig = useMemo(() => gameConfig[gameConfig.orientation], [gameConfig]);
     const leftCirclePosition: Vector3 = useMemo(() => {
         return gameConfig.orientation === 'horizontal' ? [orientationConfig.circleDistance, 0, 0] : [0, orientationConfig.circleDistance, 0];
     }, [gameConfig.orientation, orientationConfig.circleDistance]);
+    const circleColors = useMemo(() => {
+        return resolveTheme() === 'light' ? orientationConfig.circleColors.lightMode : orientationConfig.circleColors.darkMode
+    }, [resolveTheme, orientationConfig]);
 
     const rightCirclePosition: Vector3 = useMemo(() => {
         return gameConfig.orientation === 'horizontal' ? [-orientationConfig.circleDistance, 0, 0] : [0, -orientationConfig.circleDistance, 0];
@@ -89,16 +99,16 @@ function SaccadesModule() {
     return (
         <>
             <Canvas>
-                <ambientLight intensity={Math.PI / 2}/>
+                <ambientLight intensity={1.5}/>
                 {gameState.leftCircle === 'show' && (
                     <MeshCircle position={leftCirclePosition}
-                                color={orientationConfig.colors.sides} radius={0.3}/>
+                                color={circleColors.sides} radius={0.3}/>
                 )}
                 <MeshCircle position={[0, 0, 0]}
-                            color={orientationConfig.colors.center} radius={0.3}/>
+                            color={circleColors.center} radius={0.3}/>
                 {gameState.rightCircle === 'show' && (
                     <MeshCircle position={rightCirclePosition}
-                                color={orientationConfig.colors.sides} radius={0.3}/>
+                                color={circleColors.sides} radius={0.3}/>
                 )}
             </Canvas>
             {!isPlaying && (

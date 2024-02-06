@@ -1,4 +1,6 @@
 export * from "./ui/Button"
 export * from "./ui/Card"
+export * from "./ui/DropdownMenu.tsx"
 export * from "./ui/Label"
 export * from "./ui/Switch"
+export * from "./ui/theme"

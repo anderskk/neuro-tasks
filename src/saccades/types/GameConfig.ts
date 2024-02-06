@@ -1,9 +1,13 @@
+interface CircleColors {
+    center: string;
+    sides: string;
+}
 
 export interface OrientationConfig {
     repetitions: number;
-    colors: {
-        center: string;
-        sides: string;
+    circleColors: {
+        lightMode: CircleColors
+        darkMode: CircleColors
     };
     circleDistance: number;
     blinkInterval: number; // in milliseconds
