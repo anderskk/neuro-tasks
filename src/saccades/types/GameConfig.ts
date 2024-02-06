@@ -1,5 +1,5 @@
 export interface GameConfig {
-    gameTime: number; // in milliseconds
+    repetitions: number;
     colors: {
         center: string;
         sides: string;

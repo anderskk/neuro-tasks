@@ -2,6 +2,7 @@ import {Canvas} from "@react-three/fiber";
 import {useCallback, useState} from "react";
 import {GameConfig} from "./types/GameConfig.ts";
 import './styles.css';
+import {Button} from "@components";
 
 interface GameState {
     state: 'playing' | 'notPlaying';
@@ -16,14 +17,14 @@ const initGameState: GameState = {
 }
 
 const initGameConfig: GameConfig = {
-    gameTime: 31 * 1000,
+    repetitions: 30,
     colors: {
         center: '#000',
         sides: '#328bff',
     },
     circleDistance: 6,
-    blinkInterval: 500,
-    pauseInterval: 500,
+    blinkInterval: 400,
+    pauseInterval: 400,
 }
 
 function SaccadesModule() {
@@ -53,13 +54,14 @@ function SaccadesModule() {
             hideCircleIntervalId = startHideCircleInterval();
         }, gameConfig.pauseInterval);
         const showCirclesIntervalId = startShowCirclesInterval();
+        const gameTime = (gameConfig.repetitions + 1) * (gameConfig.blinkInterval + gameConfig.pauseInterval);
 
         setTimeout(() => {
             clearInterval(hideCircleIntervalId);
             clearInterval(showCirclesIntervalId);
             setGameState(initGameState);
-        }, gameConfig.gameTime);
-    }, [gameConfig.gameTime, gameConfig.pauseInterval, startHideCircleInterval, startShowCirclesInterval]);
+        }, gameTime);
+    }, [gameConfig.repetitions, gameConfig.blinkInterval, gameConfig.pauseInterval, startHideCircleInterval, startShowCirclesInterval]);
 
     const isPlaying = gameState.state === 'playing';
 
@@ -85,10 +87,10 @@ function SaccadesModule() {
                 )}
             </Canvas>
             {!isPlaying &&
-                <button className="start-button" onClick={startGame}
+                <Button onClick={startGame} className="start-button" size="lg"
                         type="button">
                     START
-                </button>
+                </Button>
             }
         </>
     )
