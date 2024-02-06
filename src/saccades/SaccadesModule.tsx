@@ -1,8 +1,10 @@
-import {Canvas} from "@react-three/fiber";
-import {useCallback, useState} from "react";
-import {GameConfig} from "./types/GameConfig.ts";
+import {Canvas, Vector3} from "@react-three/fiber";
+import {useCallback, useMemo, useState} from "react";
+import {GameConfig, OrientationConfig} from "./types/GameConfig.ts";
 import './styles.css';
-import {Button} from "@components";
+import {Button, Card, CardContent, CardHeader, CardTitle} from "@components";
+import {OrientationSwitch} from "./components/OrientationSwitch.tsx";
+import {MeshCircle} from "./components/MeshCircle.tsx";
 
 interface GameState {
     state: 'playing' | 'notPlaying';
@@ -16,7 +18,7 @@ const initGameState: GameState = {
     rightCircle: 'show',
 }
 
-const initGameConfig: GameConfig = {
+const initHorizontalConfig: OrientationConfig = {
     repetitions: 30,
     colors: {
         center: '#000',
@@ -27,9 +29,28 @@ const initGameConfig: GameConfig = {
     pauseInterval: 400,
 }
 
+const initVerticalConfig: OrientationConfig = {
+    ...initHorizontalConfig,
+    circleDistance: 3.2,
+}
+
+const initGameConfig: GameConfig = {
+    orientation: 'horizontal',
+    horizontal: initHorizontalConfig,
+    vertical: initVerticalConfig,
+}
+
 function SaccadesModule() {
-    const [gameConfig] = useState<GameConfig>(initGameConfig);
+    const [gameConfig, setGameConfig] = useState<GameConfig>(initGameConfig);
     const [gameState, setGameState] = useState<GameState>(initGameState);
+    const orientationConfig = useMemo(() => gameConfig[gameConfig.orientation], [gameConfig]);
+    const leftCirclePosition: Vector3 = useMemo(() => {
+        return gameConfig.orientation === 'horizontal' ? [orientationConfig.circleDistance, 0, 0] : [0, orientationConfig.circleDistance, 0];
+    }, [gameConfig.orientation, orientationConfig.circleDistance]);
+
+    const rightCirclePosition: Vector3 = useMemo(() => {
+        return gameConfig.orientation === 'horizontal' ? [-orientationConfig.circleDistance, 0, 0] : [0, -orientationConfig.circleDistance, 0];
+    }, [gameConfig.orientation, orientationConfig.circleDistance]);
 
     const startHideCircleInterval = useCallback(() =>
             setInterval(() => {
@@ -39,29 +60,29 @@ function SaccadesModule() {
                 } else {
                     setGameState((prevState) => ({...prevState, rightCircle: 'hide'}));
                 }
-            }, gameConfig.blinkInterval + gameConfig.pauseInterval)
-        , [gameConfig.blinkInterval, gameConfig.pauseInterval]);
+            }, orientationConfig.blinkInterval + orientationConfig.pauseInterval)
+        , [orientationConfig.blinkInterval, orientationConfig.pauseInterval]);
 
     const startShowCirclesInterval = useCallback(() => setInterval(() => {
             setGameState((prevState) => ({...prevState, leftCircle: 'show', rightCircle: 'show'}));
-        }, gameConfig.blinkInterval + gameConfig.pauseInterval),
-        [gameConfig.blinkInterval, gameConfig.pauseInterval])
+        }, orientationConfig.blinkInterval + orientationConfig.pauseInterval),
+        [orientationConfig.blinkInterval, orientationConfig.pauseInterval])
 
     const startGame = useCallback(() => {
         setGameState((prevState) => ({...prevState, state: 'playing'}));
         let hideCircleIntervalId: number;
         setTimeout(() => {
             hideCircleIntervalId = startHideCircleInterval();
-        }, gameConfig.pauseInterval);
+        }, orientationConfig.pauseInterval);
         const showCirclesIntervalId = startShowCirclesInterval();
-        const gameTime = (gameConfig.repetitions + 1) * (gameConfig.blinkInterval + gameConfig.pauseInterval);
+        const gameTime = (orientationConfig.repetitions + 1) * (orientationConfig.blinkInterval + orientationConfig.pauseInterval);
 
         setTimeout(() => {
             clearInterval(hideCircleIntervalId);
             clearInterval(showCirclesIntervalId);
             setGameState(initGameState);
         }, gameTime);
-    }, [gameConfig.repetitions, gameConfig.blinkInterval, gameConfig.pauseInterval, startHideCircleInterval, startShowCirclesInterval]);
+    }, [orientationConfig.repetitions, orientationConfig.blinkInterval, orientationConfig.pauseInterval, startHideCircleInterval, startShowCirclesInterval]);
 
     const isPlaying = gameState.state === 'playing';
 
@@ -70,27 +91,34 @@ function SaccadesModule() {
             <Canvas>
                 <ambientLight intensity={Math.PI / 2}/>
                 {gameState.leftCircle === 'show' && (
-                    <mesh position={[-gameConfig.circleDistance, 0, 0]}>
-                        <circleGeometry args={[0.3]}/>
-                        <meshStandardMaterial color={gameConfig.colors.sides}/>
-                    </mesh>
+                    <MeshCircle position={leftCirclePosition}
+                                color={orientationConfig.colors.sides} radius={0.3}/>
                 )}
-                <mesh position={[0, 0, 0]}>
-                    <circleGeometry args={[0.3]}/>
-                    <meshStandardMaterial color={gameConfig.colors.center}/>
-                </mesh>
+                <MeshCircle position={[0, 0, 0]}
+                            color={orientationConfig.colors.center} radius={0.3}/>
                 {gameState.rightCircle === 'show' && (
-                    <mesh position={[gameConfig.circleDistance, 0, 0]}>
-                        <circleGeometry args={[0.3]}/>
-                        <meshStandardMaterial color={gameConfig.colors.sides}/>
-                    </mesh>
+                    <MeshCircle position={rightCirclePosition}
+                                color={orientationConfig.colors.sides} radius={0.3}/>
                 )}
             </Canvas>
-            {!isPlaying &&
-                <Button onClick={startGame} className="start-button" size="lg"
-                        type="button">
-                    START
-                </Button>
+            {!isPlaying && (
+                <Card className="fixed left-8 bottom-10">
+                    <CardHeader>
+                        <CardTitle>Saccades</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex flex-col items-center space-y-4">
+                        <OrientationSwitch value={gameConfig.orientation}
+                                           onToggle={() => setGameConfig((prevState) => ({
+                                               ...prevState,
+                                               orientation: prevState.orientation === 'horizontal' ? 'vertical' : 'horizontal'
+                                           }))}/>
+                        <Button onClick={startGame} size="lg"
+                                type="button">
+                            START
+                        </Button>
+                    </CardContent>
+                </Card>
+            )
             }
         </>
     )
