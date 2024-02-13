@@ -10,8 +10,8 @@ export interface OrientationConfig {
         darkMode: CircleColors
     };
     circleDistance: number;
-    blinkInterval: number; // in milliseconds
-    pauseInterval: number; // in milliseconds
+    blinkDuration: number; // in milliseconds
+    pauseDuration: number; // in milliseconds
 }
 
 export interface GameConfig {
