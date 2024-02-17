@@ -19,10 +19,11 @@ export const AppContainer = () => {
   const matchRoute = useMatchRoute()
   const saccadesMatch = matchRoute({
     to: '/saccades'
-  })
+  });
   const pursuitMatch = matchRoute({
     to: '/pursuit'
-  })
+  });
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
       <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -56,7 +57,7 @@ export const AppContainer = () => {
         <ThemeModeToggle/>
       </div>
       <Outlet/>
-      <TanStackRouterDevtools/>
+      {import.meta.env.DEV && <TanStackRouterDevtools/>}
     </ThemeProvider>
   );
 }
