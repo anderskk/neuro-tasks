@@ -22,7 +22,9 @@
 
     "baseUrl": ".",
     "paths": {
+      "@app": ["src/app/index.ts"],
       "@saccades": ["src/saccades/index.ts"],
+      "@pursuit": ["src/pursuit/index.ts"],
       "@components": ["src/components/index.ts"],
       "@utils": ["src/lib/utils.ts"],
     }

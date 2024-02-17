@@ -39,7 +39,7 @@ export const ConfigCard: React.FC<Props> = ({ gameConfig, toggleOrientation, sta
   }, [onChangePauseDuration])
 
   return (
-    <Card className="fixed left-10 top-10">
+    <Card className="fixed left-20 top-10">
       <CardHeader>
         <CardTitle className="flex space-x-8 align-middle">
           <span>Saccades</span>
