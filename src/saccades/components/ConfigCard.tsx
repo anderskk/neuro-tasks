@@ -41,13 +41,15 @@ export const ConfigCard: React.FC<Props> = ({ gameConfig, toggleOrientation, sta
   return (
     <Card className="fixed left-10 top-10">
       <CardHeader>
-        <CardTitle>Saccades</CardTitle>
+        <CardTitle className="flex space-x-8 align-middle">
+          <span>Saccades</span>
+          <OrientationSwitch
+            value={gameConfig.orientation}
+            onToggle={toggleOrientation}
+          />
+        </CardTitle>
       </CardHeader>
-      <CardContent className="flex flex-col space-y-4">
-        <OrientationSwitch
-          value={gameConfig.orientation}
-          onToggle={toggleOrientation}
-        />
+      <CardContent className="flex flex-col space-y-2">
         <div>
           <Label htmlFor={repetitionsId}>Repetitions</Label>
           <Input
