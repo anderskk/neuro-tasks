@@ -41,7 +41,7 @@ export default function PursuitModule() {
         radius={50}
         animate={isPlaying}
         repetitions={config.repetitions}
-        className="bg-foreground"
+        className="bg-foreground absolute left-[50%]"
       />
     </div>
   )
