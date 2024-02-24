@@ -71,6 +71,16 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      transitionDuration: {
+        '1250': '1250ms',
+        '1500': '1500ms',
+        '1750': '1750ms',
+        '2000': '2000ms',
+        '2250': '2250ms',
+        '2500': '2500ms',
+        '2750': '2750ms',
+        '3000': '3000ms',
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],
