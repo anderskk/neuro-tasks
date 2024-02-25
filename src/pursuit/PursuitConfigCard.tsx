@@ -1,10 +1,23 @@
-import { Button, Card, CardContent, CardHeader, CardTitle } from '@components';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle, Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel, SelectTrigger, SelectValue
+} from '@components';
+import { PursuitConfig, PursuitVariant } from './PursuitConfig';
 
 interface Props {
   startGame: () => void;
+  config: PursuitConfig;
+  onSelectVariant: (option: PursuitVariant) => void;
 }
 
-export const PursuitConfigCard: React.FC<Props> = ({ startGame }) => {
+export const PursuitConfigCard: React.FC<Props> = ({ startGame, config, onSelectVariant }) => {
   return (
     <Card className="fixed left-20 top-10">
       <CardHeader>
@@ -13,6 +26,18 @@ export const PursuitConfigCard: React.FC<Props> = ({ startGame }) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col space-y-2">
+        <Select onValueChange={(variant: PursuitVariant) => onSelectVariant(variant)} value={config.variant}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select pursuit variant" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Pursuit variants</SelectLabel>
+              <SelectItem value="topDownReset">Vertical with reset</SelectItem>
+              <SelectItem value="leftRightReturn">Horizontal</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
         <Button onClick={startGame} size="lg" type="button">
           START
         </Button>
