@@ -8,7 +8,7 @@ import {
   ThemeModeToggle,
   ThemeProvider
 } from '@components';
-import { CircleDashed, CircleDot, Menu } from 'lucide-react';
+import { Atom, CircleDashed, CircleDot, Menu } from 'lucide-react';
 import { Link, Outlet, useMatchRoute } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { useState } from 'react';
@@ -22,6 +22,9 @@ export const AppContainer = () => {
   });
   const pursuitMatch = matchRoute({
     to: '/pursuit'
+  });
+  const yesNoMatch = matchRoute({
+    to: '/yesno'
   });
 
   return (
@@ -47,6 +50,12 @@ export const AppContainer = () => {
               <Link to="/pursuit" className="!justify-start">
                 <CircleDot className="mr-4"/>
                 Pursuit
+              </Link>
+            </Button>
+            <Button asChild variant={yesNoMatch ? 'default' : 'outline'} onClick={onClose}>
+              <Link to="/yesno" className="!justify-start">
+                <Atom className="mr-4" />
+                Yes/No
               </Link>
             </Button>
           </div>

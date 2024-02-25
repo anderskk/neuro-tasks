@@ -25,6 +25,7 @@
       "@app": ["src/app/index.ts"],
       "@saccades": ["src/saccades/index.ts"],
       "@pursuit": ["src/pursuit/index.ts"],
+      "@yesno": ["src/yesno/index.ts"],
       "@components": ["src/components/index.ts"],
       "@utils": ["src/lib/utils.ts"],
     }

@@ -16,11 +16,17 @@ import { Route as rootRoute } from './routes/__root'
 
 // Create Virtual Routes
 
+const YesnoLazyImport = createFileRoute('/yesno')()
 const SaccadesLazyImport = createFileRoute('/saccades')()
 const PursuitLazyImport = createFileRoute('/pursuit')()
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const YesnoLazyRoute = YesnoLazyImport.update({
+  path: '/yesno',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/yesno.lazy').then((d) => d.Route))
 
 const SaccadesLazyRoute = SaccadesLazyImport.update({
   path: '/saccades',
@@ -53,6 +59,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SaccadesLazyImport
       parentRoute: typeof rootRoute
     }
+    '/yesno': {
+      preLoaderRoute: typeof YesnoLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -62,6 +72,7 @@ export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
   PursuitLazyRoute,
   SaccadesLazyRoute,
+  YesnoLazyRoute,
 ])
 
 /* prettier-ignore-end */
