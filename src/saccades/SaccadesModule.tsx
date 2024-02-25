@@ -5,6 +5,8 @@ import { MeshCircle } from "./components/MeshCircle.tsx";
 import "./styles.css";
 import { GameConfig, OrientationConfig } from "./types/GameConfig.ts";
 import { ConfigCard } from './components/ConfigCard.tsx';
+import { useIdle } from '@uidotdev/usehooks';
+import { clsx } from 'clsx';
 
 interface GameState {
 	state: "playing" | "notPlaying";
@@ -47,6 +49,7 @@ const initGameConfig: GameConfig = {
 };
 
 function SaccadesModule() {
+	const isIdle = useIdle(500);
 	const { resolveTheme } = useTheme();
 	const [gameConfig, setGameConfig] = useState<GameConfig>(initGameConfig);
 	const [gameState, setGameState] = useState<GameState>(initGameState);
@@ -158,7 +161,9 @@ function SaccadesModule() {
 
 	return (
 		<>
-			<Canvas>
+			<Canvas className={clsx({
+				'cursor-none': isIdle && isPlaying,
+			})}>
 				<ambientLight intensity={1.5} />
 				{gameState.leftCircle === "show" && (
 					<MeshCircle

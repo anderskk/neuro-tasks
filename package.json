@@ -19,6 +19,7 @@
     "@react-three/fiber": "^8.15.16",
     "@tanstack/react-router": "^1.16.5",
     "@types/three": "^0.161.2",
+    "@uidotdev/usehooks": "^2.4.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "lucide-react": "^0.323.0",

@@ -5,4 +5,5 @@ export interface PursuitConfig {
   mode: 'reset' | 'smooth';
   speed: PursuitSpeed;
   orientation: 'horizontal' | 'vertical';
+  initialDelayMs: number;
 }

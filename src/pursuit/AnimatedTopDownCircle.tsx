@@ -5,6 +5,7 @@ interface AnimatedTopDownCircleProps {
   animate: boolean;
   animationDurationMs: number;
   repetitions: number;
+  initialDelayMs: number;
 }
 
 const topDownKeyframes = keyframes`
@@ -25,4 +26,5 @@ export const AnimatedTopDownCircle = styled(Circle)<AnimatedTopDownCircleProps>`
     animation-duration: ${({ animationDurationMs }) => `${animationDurationMs}ms`};
     animation-timing-function: linear;
     animation-iteration-count: ${({ repetitions }) => repetitions};
+    animation-delay: ${({ initialDelayMs }) => initialDelayMs}ms;
 `;

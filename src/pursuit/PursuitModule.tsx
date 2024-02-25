@@ -2,12 +2,15 @@ import { useState } from 'react';
 import { PursuitConfig, PursuitSpeed } from './pursuitConfig.ts';
 import { PursuitConfigCard } from './PursuitConfigCard.tsx';
 import { AnimatedTopDownCircle } from './AnimatedTopDownCircle.tsx';
+import { useIdle } from "@uidotdev/usehooks";
+import { clsx } from 'clsx';
 
 const initPursuitConfig: PursuitConfig = {
   mode: 'reset',
   orientation: 'vertical',
   repetitions: 10,
   speed: 8,
+  initialDelayMs: 500,
 }
 
 const animationDuration: Record<PursuitSpeed, number> = {
@@ -26,7 +29,8 @@ export default function PursuitModule() {
   const [config] = useState(initPursuitConfig);
   const [isPlaying, setIsPlaying] = useState(false);
   const animationDurationMs = animationDuration[config.speed];
-  const totalDurationMs = animationDurationMs * config.repetitions;
+  const totalDurationMs = (animationDurationMs * config.repetitions) + config.initialDelayMs;
+  const isIdle = useIdle(500);
 
   const startGame = () => {
     setIsPlaying(true);
@@ -34,10 +38,13 @@ export default function PursuitModule() {
   };
 
   return (
-    <div className="h-full">
+    <div className={clsx({
+      'cursor-none': isIdle && isPlaying,
+    }, 'h-full')}>
       {!isPlaying && (<PursuitConfigCard startGame={startGame}/>)}
       <AnimatedTopDownCircle
         animationDurationMs={animationDuration[config.speed]}
+        initialDelayMs={config.initialDelayMs}
         radius={50}
         animate={isPlaying}
         repetitions={config.repetitions}
