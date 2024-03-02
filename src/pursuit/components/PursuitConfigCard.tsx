@@ -9,7 +9,7 @@ import {
   SelectItem,
   SelectLabel, SelectTrigger, SelectValue
 } from '@components';
-import { PursuitConfig, PursuitVariant } from './PursuitConfig';
+import { PursuitConfig, PursuitVariant } from '../types/PursuitConfig.ts';
 
 interface Props {
   startGame: () => void;

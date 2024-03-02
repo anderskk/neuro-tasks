@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { PursuitConfig, PursuitSpeed, PursuitVariant } from './PursuitConfig.ts';
-import { PursuitConfigCard } from './PursuitConfigCard.tsx';
-import { AnimatedTopDownCircle } from './AnimatedTopDownCircle.tsx';
+import { PursuitConfig, PursuitSpeed, PursuitVariant } from './types/PursuitConfig.ts';
+import { PursuitConfigCard } from './components/PursuitConfigCard.tsx';
+import { AnimatedTopDownCircle } from './components/AnimatedTopDownCircle.tsx';
 import { useIdle } from "@uidotdev/usehooks";
 import { clsx } from 'clsx';
-import { AnimatedLeftRightReturnCircle } from './AnimatedLeftRightReturnCircle.tsx';
+import { AnimatedLeftRightReturnCircle } from './components/AnimatedLeftRightReturnCircle.tsx';
 
 const initPursuitConfig: PursuitConfig = {
   variant: 'topDownReset',
