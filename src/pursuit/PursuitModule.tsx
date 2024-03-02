@@ -1,39 +1,46 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { PursuitConfig, PursuitSpeed, PursuitVariant } from './types/PursuitConfig.ts';
 import { PursuitConfigCard } from './components/PursuitConfigCard.tsx';
 import { AnimatedTopDownCircle } from './components/AnimatedTopDownCircle.tsx';
 import { useIdle } from "@uidotdev/usehooks";
 import { clsx } from 'clsx';
 import { AnimatedLeftRightReturnCircle } from './components/AnimatedLeftRightReturnCircle.tsx';
+import useScreenSize from '../lib/useScreenSize.ts';
+import useLocalStorageState from '../lib/useLocalStorageState.ts';
 
 const initPursuitConfig: PursuitConfig = {
   variant: 'topDownReset',
   leftRightReturn: {
     repetitions: 10,
-    speed: 2,
+    speed: 6,
     initialDelayMs: 500,
+    circleSize: 50,
   },
   topDownReset: {
     repetitions: 10,
-    speed: 8,
+    speed: 3,
     initialDelayMs: 500,
+    circleSize: 50,
   }
 };
 
-const animationDuration: Record<PursuitSpeed, number> = {
-  1: 5000,
-  2: 4500,
-  3: 4000,
-  4: 3500,
-  5: 3000,
-  6: 2500,
-  7: 2000,
-  8: 1500,
-  9: 1000,
+const speedToPixelsPerSecondMap: Record<PursuitSpeed, number> = {
+  1: 300,
+  2: 440,
+  3: 580,
+  4: 720,
+  5: 860,
+  6: 1000,
+  7: 1140,
+  8: 1280,
+  9: 1420,
 }
 
 export default function PursuitModule() {
-  const [gameConfig, setGameConfig] = useState(initPursuitConfig);
+  const { width: screenWidth, height: screenHeight } = useScreenSize();
+  const [gameConfig, setGameConfig] = useLocalStorageState('pursuitConfig', {
+    defaultValue: () => initPursuitConfig
+  });
   const changeVariant = (variant: PursuitVariant) => setGameConfig(prev => ({
     ...prev,
     variant
@@ -41,7 +48,20 @@ export default function PursuitModule() {
   const chosenVariant = gameConfig.variant;
   const variantConfig = gameConfig[chosenVariant];
   const [isPlaying, setIsPlaying] = useState(false);
-  const animationDurationMs = animationDuration[variantConfig.speed];
+
+  const pixelsToTravel = useMemo(() => {
+    switch (chosenVariant) {
+      case "leftRightReturn":
+        return (screenWidth - variantConfig.circleSize) * 2;
+      case "topDownReset":
+        return screenHeight - variantConfig.circleSize;
+    }
+  }, [chosenVariant, screenHeight, screenWidth, variantConfig.circleSize]);
+
+  const animationDurationMs = useMemo(() => {
+    const pixelsPerSecond = speedToPixelsPerSecondMap[variantConfig.speed];
+    return pixelsToTravel / pixelsPerSecond * 1000
+  }, [pixelsToTravel, variantConfig.speed])
   const totalDurationMs = (animationDurationMs * variantConfig.repetitions) + variantConfig.initialDelayMs;
   const isIdle = useIdle(500);
 
@@ -63,18 +83,18 @@ export default function PursuitModule() {
       )}
       {chosenVariant === 'leftRightReturn' ? (
         <AnimatedLeftRightReturnCircle
-          animationDurationMs={animationDuration[variantConfig.speed]}
+          animationDurationMs={animationDurationMs}
           initialDelayMs={variantConfig.initialDelayMs}
-          radius={50}
+          radius={variantConfig.circleSize}
           animate={isPlaying}
           repetitions={variantConfig.repetitions}
           className="bg-foreground absolute top-[50%]"
         />
       ) : (
         <AnimatedTopDownCircle
-          animationDurationMs={animationDuration[variantConfig.speed]}
+          animationDurationMs={animationDurationMs}
           initialDelayMs={variantConfig.initialDelayMs}
-          radius={50}
+          radius={variantConfig.circleSize}
           animate={isPlaying}
           repetitions={variantConfig.repetitions}
           className="bg-foreground absolute left-[50%]"

@@ -12,4 +12,5 @@ export interface PursuitVariantConfig {
   repetitions: number;
   speed: PursuitSpeed;
   initialDelayMs: number;
+  circleSize: number;
 }
