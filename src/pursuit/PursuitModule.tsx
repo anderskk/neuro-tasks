@@ -7,6 +7,7 @@ import { clsx } from 'clsx';
 import { AnimatedLeftRightReturnCircle } from './components/AnimatedLeftRightReturnCircle.tsx';
 import useScreenSize from '../lib/useScreenSize.ts';
 import useLocalStorageState from '../lib/useLocalStorageState.ts';
+import { AnimatedTopDownReturnCircle } from './components/AnimatedTopDownReturnCircle.tsx';
 
 const initPursuitConfig: PursuitConfig = {
   variant: 'topDownReset',
@@ -17,6 +18,12 @@ const initPursuitConfig: PursuitConfig = {
     circleSize: 50,
   },
   topDownReset: {
+    repetitions: 10,
+    speed: 3,
+    initialDelayMs: 500,
+    circleSize: 50,
+  },
+  topDownReturn: {
     repetitions: 10,
     speed: 3,
     initialDelayMs: 500,
@@ -37,10 +44,14 @@ const speedToPixelsPerSecondMap: Record<PursuitSpeed, number> = {
 }
 
 export default function PursuitModule() {
-  const { width: screenWidth, height: screenHeight } = useScreenSize();
-  const [gameConfig, setGameConfig] = useLocalStorageState('pursuitConfig', {
-    defaultValue: () => initPursuitConfig
+  const {width: screenWidth, height: screenHeight} = useScreenSize();
+  const [storedGameConfig, setGameConfig] = useLocalStorageState<PursuitConfig | Partial<PursuitConfig>>('pursuitConfig', {
+    defaultValue: () => initPursuitConfig,
   });
+  const gameConfig = useMemo(() => ({
+    ...initPursuitConfig,
+    ...storedGameConfig
+  }), [storedGameConfig])
   const changeVariant = (variant: PursuitVariant) => setGameConfig(prev => ({
     ...prev,
     variant
@@ -55,6 +66,8 @@ export default function PursuitModule() {
         return (screenWidth - variantConfig.circleSize) * 2;
       case "topDownReset":
         return screenHeight - variantConfig.circleSize;
+      case "topDownReturn":
+        return (screenHeight - variantConfig.circleSize) * 2;
     }
   }, [chosenVariant, screenHeight, screenWidth, variantConfig.circleSize]);
 
@@ -90,8 +103,17 @@ export default function PursuitModule() {
           repetitions={variantConfig.repetitions}
           className="bg-foreground absolute top-[50%]"
         />
-      ) : (
+      ) : chosenVariant === 'topDownReset' ? (
         <AnimatedTopDownCircle
+          animationDurationMs={animationDurationMs}
+          initialDelayMs={variantConfig.initialDelayMs}
+          radius={variantConfig.circleSize}
+          animate={isPlaying}
+          repetitions={variantConfig.repetitions}
+          className="bg-foreground absolute left-[50%]"
+        />
+      ) : (
+        <AnimatedTopDownReturnCircle
           animationDurationMs={animationDurationMs}
           initialDelayMs={variantConfig.initialDelayMs}
           radius={variantConfig.circleSize}

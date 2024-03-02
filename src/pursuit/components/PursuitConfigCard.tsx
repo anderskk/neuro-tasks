@@ -34,6 +34,7 @@ export const PursuitConfigCard: React.FC<Props> = ({ startGame, config, onSelect
             <SelectGroup>
               <SelectLabel>Pursuit variants</SelectLabel>
               <SelectItem value="topDownReset">Vertical with reset</SelectItem>
+              <SelectItem value="topDownReturn">Vertical</SelectItem>
               <SelectItem value="leftRightReturn">Horizontal</SelectItem>
             </SelectGroup>
           </SelectContent>
