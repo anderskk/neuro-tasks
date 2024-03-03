@@ -85,7 +85,17 @@ export default function PursuitModule() {
         repetitions: num
       }
     }), [gameConfig, setGameConfig]
-  )
+  );
+
+  const onSpeedChange = useCallback((num: number) => setGameConfig({
+      ...gameConfig,
+      [gameConfig.variant]: {
+        ...gameConfig[gameConfig.variant],
+        speed: num
+      }
+    }), [gameConfig, setGameConfig]
+  );
+
   const startGame = () => {
     setIsPlaying(true);
     setTimeout(() => setIsPlaying(false), totalDurationMs);
@@ -95,14 +105,6 @@ export default function PursuitModule() {
     <div className={clsx({
       'cursor-none': isIdle && isPlaying,
     }, 'h-full')}>
-      {!isPlaying && (
-        <PursuitConfigCard
-          startGame={startGame}
-          config={gameConfig}
-          onSelectVariant={changeVariant}
-          onChangeRepetitions={onRepetitionChange}
-        />
-      )}
       {chosenVariant === 'leftRightReturn' ? (
         <AnimatedLeftRightReturnCircle
           animationDurationMs={animationDurationMs}
@@ -129,6 +131,15 @@ export default function PursuitModule() {
           animate={isPlaying}
           repetitions={variantConfig.repetitions}
           className="bg-foreground absolute left-[50%]"
+        />
+      )}
+      {!isPlaying && (
+        <PursuitConfigCard
+          startGame={startGame}
+          config={gameConfig}
+          onSelectVariant={changeVariant}
+          onChangeRepetitions={onRepetitionChange}
+          onChangeSpeed={onSpeedChange}
         />
       )}
     </div>
