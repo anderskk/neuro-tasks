@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { PursuitConfig, PursuitSpeed, PursuitVariant } from './types/PursuitConfig.ts';
 import { PursuitConfigCard } from './components/PursuitConfigCard.tsx';
 import { AnimatedTopDownCircle } from './components/AnimatedTopDownCircle.tsx';
@@ -48,7 +48,7 @@ export default function PursuitModule() {
   const [storedGameConfig, setGameConfig] = useLocalStorageState<PursuitConfig | Partial<PursuitConfig>>('pursuitConfig', {
     defaultValue: () => initPursuitConfig,
   });
-  const gameConfig = useMemo(() => ({
+  const gameConfig: PursuitConfig = useMemo(() => ({
     ...initPursuitConfig,
     ...storedGameConfig
   }), [storedGameConfig])
@@ -78,6 +78,14 @@ export default function PursuitModule() {
   const totalDurationMs = (animationDurationMs * variantConfig.repetitions) + variantConfig.initialDelayMs;
   const isIdle = useIdle(500);
 
+  const onRepetitionChange = useCallback((num: number) => setGameConfig({
+      ...gameConfig,
+      [gameConfig.variant]: {
+        ...gameConfig[gameConfig.variant],
+        repetitions: num
+      }
+    }), [gameConfig, setGameConfig]
+  )
   const startGame = () => {
     setIsPlaying(true);
     setTimeout(() => setIsPlaying(false), totalDurationMs);
@@ -92,6 +100,7 @@ export default function PursuitModule() {
           startGame={startGame}
           config={gameConfig}
           onSelectVariant={changeVariant}
+          onChangeRepetitions={onRepetitionChange}
         />
       )}
       {chosenVariant === 'leftRightReturn' ? (
