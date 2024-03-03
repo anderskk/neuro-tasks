@@ -14,15 +14,16 @@ import {
   SelectValue,
   Slider
 } from '@components';
-import { highestPursuitSpeed, lowestPursuitSpeed, PursuitConfig, PursuitVariant } from '../types/PursuitConfig.ts';
+import { highestPursuitSpeed, lowestPursuitSpeed, PursuitConfig, PursuitVariant } from '../types/PursuitConfig';
 import { ChangeEvent, useCallback, useId } from 'react';
 
 interface Props {
   startGame: () => void;
   config: PursuitConfig;
   onSelectVariant: (option: PursuitVariant) => void;
-  onChangeRepetitions: (num: number) => void;
-  onChangeSpeed: (num: number) => void;
+  onChangeRepetitions: (reps: number) => void;
+  onChangeSpeed: (speed: number) => void;
+  onChangeCircleSize: (size: number) => void;
 }
 
 export const PursuitConfigCard: React.FC<Props> = ({
@@ -30,10 +31,12 @@ export const PursuitConfigCard: React.FC<Props> = ({
   config,
   onSelectVariant,
   onChangeRepetitions,
-  onChangeSpeed
+  onChangeSpeed,
+  onChangeCircleSize,
 }) => {
   const repetitionsId = useId();
-  const sliderId = useId();
+  const speedId = useId();
+  const circleSizeId = useId();
   const chosenVariantConfig = config[config.variant];
   const onRepetitionsChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
     const num = Number(event.target.value)
@@ -44,9 +47,12 @@ export const PursuitConfigCard: React.FC<Props> = ({
   const onSpeedChange = useCallback((value: number[]) => {
     onChangeSpeed(value[0])
   }, [onChangeSpeed]);
+  const onCircleSizeChange = useCallback((value: number[]) => {
+    onChangeCircleSize(value[0])
+  }, [onChangeCircleSize]);
 
   return (
-    <Card className="fixed left-20 top-10">
+    <Card className="fixed left-20 top-10 w-[360px]">
       <CardHeader>
         <CardTitle className="flex space-x-8 items-center">
           <span>Pursuit</span>
@@ -75,15 +81,25 @@ export const PursuitConfigCard: React.FC<Props> = ({
           />
         </div>
         <div className="flex flex-col space-y-3">
-          <Label htmlFor={sliderId}>Speed</Label>
+          <Label htmlFor={circleSizeId}>Circle size</Label>
+          <Slider
+            value={[chosenVariantConfig.circleSize]}
+            onValueChange={onCircleSizeChange}
+            min={30}
+            max={200}
+            step={5}
+            id={circleSizeId}
+          />
+        </div>
+        <div className="flex flex-col space-y-3">
+          <Label htmlFor={speedId}>Speed</Label>
           <Slider
             value={[chosenVariantConfig.speed]}
             onValueChange={onSpeedChange}
             min={lowestPursuitSpeed}
             max={highestPursuitSpeed}
             step={1}
-            className="w-[320px]"
-            id={sliderId}
+            id={speedId}
           />
           <div className="flex space-x-2 justify-between">
             <span>Slow</span>

@@ -96,6 +96,15 @@ export default function PursuitModule() {
     }), [gameConfig, setGameConfig]
   );
 
+  const onCircleSizeChange = useCallback((size: number) => setGameConfig({
+      ...gameConfig,
+      [gameConfig.variant]: {
+        ...gameConfig[gameConfig.variant],
+        circleSize: size
+      }
+    }), [gameConfig, setGameConfig]
+  );
+
   const startGame = () => {
     setIsPlaying(true);
     setTimeout(() => setIsPlaying(false), totalDurationMs);
@@ -140,6 +149,7 @@ export default function PursuitModule() {
           onSelectVariant={changeVariant}
           onChangeRepetitions={onRepetitionChange}
           onChangeSpeed={onSpeedChange}
+          onChangeCircleSize={onCircleSizeChange}
         />
       )}
     </div>
