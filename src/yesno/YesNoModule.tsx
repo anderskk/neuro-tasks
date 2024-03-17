@@ -1,8 +1,6 @@
-import { YesNoRightLeft } from './YesNoRightLeft.tsx';
-import { YesNoAll } from './YesNoAll.tsx';
-import { YesNoTopBottom } from './YesNoTopBottom.tsx';
 import Draggable, { ControlPosition } from 'react-draggable';
 import { useMemo } from 'react';
+import { YesNoAtom } from './YesNoAtom.tsx';
 
 const yesNoPositionKey = 'yesno-position';
 const savePosition = (position: ControlPosition) => localStorage.setItem(yesNoPositionKey, JSON.stringify(position))
@@ -24,13 +22,13 @@ export const YesNoModule = () => {
       >
         <div
           className="flex flex-col space-y-[150px] items-center w-min cursor-move">
-          <YesNoTopBottom/>
+          <YesNoAtom topCircle bottomCircle />
           <div className="flex space-x-[150px]">
-            <YesNoRightLeft/>
-            <YesNoAll/>
-            <YesNoRightLeft/>
+            <YesNoAtom rightCircle leftCircle />
+            <YesNoAtom topCircle rightCircle bottomCircle leftCircle />
+            <YesNoAtom rightCircle leftCircle />
           </div>
-          <YesNoTopBottom/>
+          <YesNoAtom topCircle bottomCircle />
         </div>
       </Draggable>
     </div>
