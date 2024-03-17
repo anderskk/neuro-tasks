@@ -59,8 +59,8 @@ function SaccadesModule() {
     }
   )
   const gameConfig: GameConfig = useMemo(() => ({
-    ...storedGameConfig,
     ...initGameConfig,
+    ...storedGameConfig,
   }), [storedGameConfig])
   const [gameState, setGameState] = useState<GameState>(initGameState);
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
